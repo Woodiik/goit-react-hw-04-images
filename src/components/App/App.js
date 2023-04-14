@@ -25,7 +25,7 @@ export function App() {
         })
         .catch(error => new Error(error.message));
     }
-  }, [name]);
+  }, [name, page]);
   const onSubmit = name => {
     setName(name);
     setPage(1);
