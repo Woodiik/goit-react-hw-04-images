@@ -12,16 +12,17 @@ export function Modal({ onClose, url }) {
   //  window.removeEventListener('keydown', this.handleKeydown);
   //}
   useEffect(() => {
+    const handleKeydown = e => {
+      if (e.code === 'Escape') {
+        onClose();
+      }
+    };
     window.addEventListener('keydown', handleKeydown);
     return () => {
       window.removeEventListener('keydown', handleKeydown);
     };
-  }, [handleKeydown]);
-  const handleKeydown = e => {
-    if (e.code === 'Escape') {
-      onClose();
-    }
-  };
+  }, [onClose]);
+
   const handleOverlayClick = e => {
     if (e.target === e.currentTarget) {
       onClose();
