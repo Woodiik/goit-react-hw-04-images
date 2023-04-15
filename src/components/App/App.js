@@ -15,30 +15,36 @@ export function App() {
   const [loader, setLoader] = useState(false);
 
   useEffect(() => {
-    if (items) {
-      setLoader(true);
-      fetchPhotos(name, page)
+    if (name === '') {
+      return;
+    }
+    setLoader(true);
+    setPage(state => {
+      fetchPhotos(name, state)
         .then(({ hits }) => {
           setItems(hits);
           setLoader(false);
-          setPage(state => state + 1);
         })
         .catch(error => new Error(error.message));
-    }
-  }, [items, name, page]);
+      return state;
+    });
+  }, [name]);
+
+  const onButtonClick = () => {
+    setLoader(true);
+    fetchPhotos(name, page + 1).then(({ hits }) => {
+      setItems(state => [...state, ...hits]);
+      setLoader(false);
+      setPage(s => s + 1);
+    });
+  };
+
   const onSubmit = name => {
     setName(name);
     setPage(1);
     setItems([]);
   };
-  const onButtonClick = () => {
-    setLoader(true);
-    fetchPhotos(name, page).then(({ hits }) => {
-      setItems(state => [...state, ...hits]);
-      setPage(state => state + 1);
-      setLoader(false);
-    });
-  };
+
   const toggleModal = () => {
     setShowModal(state => !state);
   };
@@ -58,10 +64,10 @@ export function App() {
       )}
       <Gallery>
         {items &&
-          items.map(({ id, largeImageURL, webformatURL }) => {
+          items.map(({ id, largeImageURL, webformatURL }, index) => {
             return (
               <Item
-                key={id}
+                key={index}
                 url={webformatURL}
                 largeImg={largeImageURL}
                 openModal={toggleModal}
